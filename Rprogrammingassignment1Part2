@@ -1,0 +1,23 @@
+################################################################################
+# Assignment 1: R Programming
+# Name: Tavianne Kemp   Date: 06/17/2021
+# Part 2
+# Write a function that reads a directory full of files and reports the number 
+# of completely observed cases in each data file. The function should return a 
+# data frame where the first column is the name of the file and the second 
+# column is the number of complete cases.
+################################################################################
+complete <- function(directory, id = 1:332) {
+  data <- data.frame()
+  fullFiles <- list.files(directory, full.names = TRUE)
+  for(i in id) {
+    #Reading in the files
+    iMonitor <- read.csv(fullFiles[i])
+    #Creating the nobs variable counting complete cases
+    nobs <- sum(complete.cases(iMonitor))
+    table <- data.frame(i, nobs)
+    data <- rbind(data, table)
+  }
+  colnames(data) <- c("id", "nobs")
+  data
+}

@@ -1,0 +1,36 @@
+# R Programming Assignment 1
+# Name: Tavianne Kemp  Date: 06/17/2021
+
+################################################################################
+# Part 3
+# Write a function that takes a directory of data files and a threshold for 
+# complete cases and calculates the correlation between sulfate and nitrate for 
+# monitor locations where the number of completely observed cases (on all 
+# variables) is greater than the threshold. The function should return a vector 
+# of correlations for the monitors that meet the threshold requirement. If no 
+# monitors meet the threshold requirement, then the function should return a 
+# numeric vector of length 0
+################################################################################
+# Start of function
+corr <- function(directory, threshold = 0) {
+  corrResults <- numeric(0)
+  
+  completeCases <- complete(directory)
+  completeCases <- completeCases[completeCases$nobs>=threshold, ]
+  
+  fullFiles <- list.files(directory, full.names = TRUE)
+  if(nrow(completeCases)> threshold) {
+    for(monitor in completeCases$id) {
+      path <- paste(getwd(), "/", directory, "/", sprintf("%03d", monitor), 
+          ".csv", sep = "")
+    monData <- read.csv(path)
+    DataWanted <- monData[(!is.na(monData$sulfate)), ]
+    DataWanted <- DataWanted[(!is.na(DataWanted$nitrate)), ]
+    
+    SulfateData <- DataWanted["sulfate"]
+    NitrateData <- DataWanted["nitrate"]
+    corrResults <- c(corrResults, cor(SulfateData, NitrateData))
+    }
+  }
+  corrResults
+}
